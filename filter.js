@@ -1,6 +1,3 @@
-const supabaseUrl = "https://gnhjqxgnbgrdxobasvwi.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduaGpxeGduYmdyZHhvYmFzdndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU5MDUxMDQsImV4cCI6MjAzMTQ4MTEwNH0.Ep2aDEXK5aM7O-52Lh_tW6yW3g3vGg9yqFjw1i5m0aE";
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 (async () => {
     try {
         // 1. Create a blur overlay to block content until user is verified.
@@ -14,7 +11,10 @@ const supabase = supabase.createClient(supabaseUrl, supabaseKey);
         s.onerror = () => { throw new Error('Failed to load the Supabase library from CDN. Check your network or for content blockers.'); };
         document.head.appendChild(s);
         await new Promise(r => s.onload = r);
-        const S = window.supabase.createClient('https://yhhrkirlabyghtczabqh.supabase.co', 'sb_publishable_VAd887a32f8HihbGKeLiJw_lkN6eIse');
+
+        const supabaseUrl = "https://yhhrkirlabyghtczabqh.supabase.co";
+        const supabaseKey = "sb_publishable_VAd887a32f8HihbGKeLiJw_lkN6eIse";
+        const S = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         // 3. Check for authenticated user
         const { data: { user } } = await S.auth.getUser();
