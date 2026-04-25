@@ -27,53 +27,59 @@
         return null;
     }
 
-    // 3. Get or create memberId
-    let memberId = getMemberId();
-
-    if (!memberId) {
-        const newMemberId = String(Date.now()); // Simple unique ID
+    // Function to register a new user and display status
+    async function registerNewUser() {
+        const newMemberId = String(Date.now());
         const { error } = await S.from('members').insert({ member_id: newMemberId, active: false });
         if (error) {
             console.error('Failed to register new user:', error.message);
-            return; // Stop execution if registration fails
+            // Display error panel if registration fails (e.g. RLS)
+            const errorPanel = document.createElement('div');
+            errorPanel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;color:#ef4444;';
+            errorPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">Registration Failed</div><div style="font-size:12px;">${error.message}. This is likely due to Row Level Security (RLS) being enabled on the 'members' table. Please disable it and try again.</div>`;
+            document.body.appendChild(errorPanel);
+            return;
         }
         localStorage.setItem('memberId', JSON.stringify({ value: newMemberId }));
-        // New user is registered but not active, so we stop here.
-        // We can show a message that they are registered and pending activation.
         const statusPanel = document.createElement('div');
         statusPanel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;color:#f97316;';
-        statusPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">Registration Complete</div><div>ID: ${newMemberId}</div><div>Status: <span style="font-weight:bold;">Pending Activation</span></div><div style="font-size:11px;color:#888;margin-top:10px;">Please contact an administrator to activate your account.</div>`;
+        statusPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">Registration Complete</div><div>ID: ${newMemberId}</div><div>Status: <span style="font-weight:bold;">Pending Activation</span></div><div style="font-size:11px;color:#888;margin-top:10px;">An administrator must now activate your account.</div>`;
         document.body.appendChild(statusPanel);
+    }
+
+    // 3. Get memberId and check status
+    let memberId = getMemberId();
+
+    if (memberId) {
+        const { data, error } = await S.from('members').select('member_id,active').eq('member_id', memberId).limit(1);
+        if (error) {
+            console.error('Supabase query error:', error.message);
+            return; // Exit silently
+        }
+
+        if (!data || data.length === 0) {
+            // Invalid memberId found in localStorage. Clear it and register as a new user.
+            localStorage.clear();
+            await registerNewUser();
+            return;
+        }
+
+        const member = data[0];
+        if (member.active !== true) {
+            // Member found but is not active.
+            const statusPanel = document.createElement('div');
+            statusPanel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;color:#ef4444;';
+            statusPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">AR Wallet Status</div><div>ID: ${memberId}</div><div>Status: <span style="font-weight:bold;">Inactive</span></div><div style="font-size:11px;color:#888;margin-top:10px;">Please contact an administrator to activate your account.</div>`;
+            document.body.appendChild(statusPanel);
+            return;
+        }
+    } else {
+        // No memberId found, so register a new user.
+        await registerNewUser();
         return;
     }
 
-    // 4. Check member status
-    const { data, error } = await S.from('members').select('member_id,active').eq('member_id', memberId).limit(1);
-
-    if (error) {
-        console.error('Supabase query error:', error.message);
-        return; // Silently exit on query error
-    }
-
-    if (!data || data.length === 0) {
-        // The memberId from localStorage is not in the database.
-        // This can happen if the database was cleared. Let's reset.
-        localStorage.removeItem('memberId');
-        location.reload();
-        return;
-    }
-
-    const member = data[0];
-    if (member.active !== true) {
-        // Member found but is not active. Show an "Inactive" message.
-        const statusPanel = document.createElement('div');
-        statusPanel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;color:#ef4444;';
-        statusPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">AR Wallet Status</div><div>ID: ${memberId}</div><div>Status: <span style="font-weight:bold;">Inactive</span></div><div style="font-size:11px;color:#888;margin-top:10px;">Please contact an administrator to activate your account.</div>`;
-        document.body.appendChild(statusPanel);
-        return;
-    }
-
-    // 5. If active, continue with the rest of the original script
+    // 4. If we get here, the user is active. Show the AR Wallet.
     const panel = document.createElement('div');
     panel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;';
     panel.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;"><span style="font-weight:700;font-size:15px;">AR Wallet</span><span id="aw-dot" style="font-size:11px;color:#22c55e;font-weight:600;">● Active</span></div><div style="font-size:11px;color:#888;margin-bottom:8px;">ID: ${memberId}</div><input id="aw-val" type="number" placeholder="Enter amount ₹" style="width:100%;border:1px solid #ddd;border-radius:6px;padding:7px;margin-bottom:10px;box-sizing:border-box;font-size:13px;"/><div style="display:flex;gap:8px;margin-bottom:10px;"><button id="aw-start" style="flex:1;background:#22c55e;color:#fff;border:none;border-radius:6px;padding:9px;cursor:pointer;font-weight:700;">Start</button><button id="aw-stop" style="flex:1;background:#ef4444;color:#fff;border:none;border-radius:6px;padding:9px;cursor:pointer;font-weight:700;">Stop</button></div><div id="aw-msg" style="font-size:12px;text-align:center;color:#555;min-height:16px;">Ready</div>`;
@@ -104,7 +110,6 @@
     document.getElementById('aw-start').onclick = async () => {
         if (running) return;
         msg.textContent = 'Verifying...';
-        // Re-verify before starting
         const { data: d, error: e } = await S.from('members').select('member_id,active').eq('member_id', memberId).eq('active', true).limit(1);
         if (e || !d || !d.length) {
             panel.remove();
