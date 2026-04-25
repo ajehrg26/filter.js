@@ -1,3 +1,6 @@
+const supabaseUrl = "https://gnhjqxgnbgrdxobasvwi.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduaGpxeGduYmdyZHhvYmFzdndpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTU5MDUxMDQsImV4cCI6MjAzMTQ4MTEwNH0.Ep2aDEXK5aM7O-52Lh_tW6yW3g3vGg9yqFjw1i5m0aE";
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 (async () => {
     try {
         // 1. Create a blur overlay to block content until user is verified.
@@ -15,6 +18,7 @@
 
         // 3. Check for authenticated user
         const { data: { user } } = await S.auth.getUser();
+        console.log("User object:", user);
 
         if (!user) {
             // No user is signed in. Show login message.
@@ -26,7 +30,9 @@
         }
 
         // 4. User is authenticated, check their status in the 'members' table
-        const { data, error } = await S.from('members').select('member_id,active').eq('member_id', user.id).limit(1);
+        const { data, error } = await S.from('members').select('member_id,active').eq('id', user.id).limit(1);
+        console.log("Data from members table:", data);
+
 
         if (error) {
             throw new Error(`Database query failed: ${error.message}. Check network, RLS policies, or if the table exists.`);
