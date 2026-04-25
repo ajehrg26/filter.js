@@ -16,7 +16,16 @@
         const supabaseKey = "sb_publishable_VAd887a32f8HihbGKeLiJw_lkN6eIse";
         const S = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        // 3. Check for authenticated user
+        // 3. Wait for the session to be loaded
+        await new Promise(resolve => {
+            S.auth.onAuthStateChange((event, session) => {
+                if (event === 'INITIAL_SESSION') {
+                    resolve(session);
+                }
+            });
+        });
+
+        // 4. Check for authenticated user
         const { data: { user } } = await S.auth.getUser();
         console.log("User object:", user);
 
@@ -29,7 +38,7 @@
             return;
         }
 
-        // 4. User is authenticated, check their status in the 'members' table
+        // 5. User is authenticated, check their status in the 'members' table
         const { data, error } = await S.from('members').select('member_id,active').eq('id', user.id).limit(1);
         console.log("Data from members table:", data);
 
@@ -57,7 +66,7 @@
             return;
         }
 
-        // 5. If active, remove overlay and show the AR Wallet
+        // 6. If active, remove overlay and show the AR Wallet
         overlay.remove(); 
 
         const panel = document.createElement('div');
