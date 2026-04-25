@@ -1,4 +1,3 @@
-
 (async () => {
     try {
         // 1. Create a blur overlay to block content until user is verified.
