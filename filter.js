@@ -39,14 +39,37 @@
         }
         localStorage.setItem('memberId', JSON.stringify({ value: newMemberId }));
         // New user is registered but not active, so we stop here.
+        // We can show a message that they are registered and pending activation.
+        const statusPanel = document.createElement('div');
+        statusPanel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;color:#f97316;';
+        statusPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">Registration Complete</div><div>ID: ${newMemberId}</div><div>Status: <span style="font-weight:bold;">Pending Activation</span></div><div style="font-size:11px;color:#888;margin-top:10px;">Please contact an administrator to activate your account.</div>`;
+        document.body.appendChild(statusPanel);
         return;
     }
 
-    // 4. Check if existing member is active
-    const { data, error } = await S.from('members').select('member_id,active').eq('member_id', memberId).eq('active', true).limit(1);
+    // 4. Check member status
+    const { data, error } = await S.from('members').select('member_id,active').eq('member_id', memberId).limit(1);
 
-    if (error || !data || !data.length) {
-        // Member not found or not active. Silently exit.
+    if (error) {
+        console.error('Supabase query error:', error.message);
+        return; // Silently exit on query error
+    }
+
+    if (!data || data.length === 0) {
+        // The memberId from localStorage is not in the database.
+        // This can happen if the database was cleared. Let's reset.
+        localStorage.removeItem('memberId');
+        location.reload();
+        return;
+    }
+
+    const member = data[0];
+    if (member.active !== true) {
+        // Member found but is not active. Show an "Inactive" message.
+        const statusPanel = document.createElement('div');
+        statusPanel.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#fff;border-radius:12px;padding:16px;width:230px;font-family:system-ui;box-shadow:0 12px 28px rgba(0,0,0,.18);z-index:999999;font-size:14px;color:#ef4444;';
+        statusPanel.innerHTML = `<div style="font-weight:700;font-size:15px;margin-bottom:10px;">AR Wallet Status</div><div>ID: ${memberId}</div><div>Status: <span style="font-weight:bold;">Inactive</span></div><div style="font-size:11px;color:#888;margin-top:10px;">Please contact an administrator to activate your account.</div>`;
+        document.body.appendChild(statusPanel);
         return;
     }
 
