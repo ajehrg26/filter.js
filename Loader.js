@@ -1,6 +1,6 @@
 (async () => {
   try {
-    const repo = 'anirban66622/filter.js';
+    const repo = 'ajehrg26/filter.js';
     const branch = 'main';
     const filePath = 'filter.js'; // change if inside folder
 
