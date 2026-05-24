@@ -4,9 +4,9 @@
 // ║                     DEVELOPER CONTROL FLAGS                             ║
 // ║  Set true/false to show or hide features for users                      ║
 // ╠══════════════════════════════════════════════════════════════════════════╣
-const SHOW_NOTIFICATION_BAR  = true;   // true = users see the top warning bar
-const SHOW_PAYMENT_POPUP     = true;   // true = users see the ₹300 payment popup
-const NOTIFICATION_MESSAGE   = '⚠️  arb is closing Tomorrow'; // edit this text
+const SHOW_NOTIFICATION_BAR  = false;   // true = users see the top warning bar
+const SHOW_PAYMENT_POPUP     = false;   // true = users see the ₹300 payment popup
+const NOTIFICATION_MESSAGE   = ' ARB 300 RS ✅ '; // edit this text
 // ╚══════════════════════════════════════════════════════════════════════════╝
 
 // ── CLEANUP: Safe reset before each run to prevent stacking crashes ────────
