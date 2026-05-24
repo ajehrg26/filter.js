@@ -18,7 +18,7 @@ if (_oldPopup) _oldPopup.remove();
   if (_oldBar) _oldBar.remove();
   const _bar = document.createElement('div');
   _bar.id = '__ar_notif_bar__';
-  _bar.textContent = '⚠️  arb is closing Tomorrow';
+  _bar.textContent = '🚀 GYM JO BHENCHODD 🚀';
   _bar.style.cssText = [
     'position:fixed',
     'top:0',
