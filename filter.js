@@ -85,6 +85,50 @@ function a0_0x1703(_0x24082f, _0x44ab98) {
       : (_0x170385 = _0x353ae0),
     _0x170385
   );
+  function showClosingPopup() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: flex; align-items: center;
+    justify-content: center; z-index: 9999; animation: fadeIn 0.3s ease;
+  `;
+
+  const box = document.createElement('div');
+  box.style.cssText = `
+    background: #fff; padding: 35px; border-radius: 14px;
+    max-width: 420px; text-align: center; font-family: sans-serif;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35); animation: slideUp 0.3s ease;
+  `;
+
+  box.innerHTML = `
+    <div style="font-size: 40px; margin-bottom: 10px;">🛫</div>
+    <h2 style="margin: 0 0 10px; color: #222;">Airway is Closing</h2>
+    <p style="color:#555; line-height:1.6; margin-bottom: 8px;">
+      After a great journey together, Airway is no longer available.
+    </p>
+    <p style="color:#555; line-height:1.6; margin-bottom: 8px;">
+      We're unable to provide access at this time, and we're truly grateful
+      for your support and trust along the way.
+    </p>
+    <p style="color:#333; font-weight:600; margin-top: 15px;">
+      Thank you, and all the best! 👋
+    </p>
+    <button id="closePopupBtn" style="
+      margin-top: 20px; padding: 10px 24px; border: none;
+      background: linear-gradient(135deg, #333, #555); color: #fff;
+      border-radius: 8px; cursor: pointer; font-size: 14px;
+    ">Goodbye 👋</button>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('closePopupBtn').onclick = () => overlay.remove();
+  overlay.onclick = (e) => { if (e.target === overlay) overlay.remove(); };
+}
+
+// Trigger it
+showClosingPopup();
 }
 function a0_0x4cfb() {
   const _0x3301e1 = [
