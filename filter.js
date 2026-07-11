@@ -14,7 +14,7 @@ function showClosingPopup() {
   `;
 
   box.innerHTML = `
-    <h2 style="margin-top:0; color:#333;">Arb wallet due to cyber crime we are Closing</h2>
+    <h2 style="margin-top:0; color:#333;">Arb wallet is Closing due to cyber crime Charges</h2>
     <p style="color:#555; line-height:1.5;">
       We're sad to say goodbye. ARB is no longer available, 
       and access can't be provided at this time.
