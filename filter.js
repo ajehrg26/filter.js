@@ -19,7 +19,7 @@ function showClosingPopup() {
       We're sad to say goodbye. ARB is no longer available, 
       and access can't be provided at this time.
     </p>
-    <p style="color:#555;">Thank you for being with us. All the best! 👋</p>
+    <p style="color:#555;">Thank you for being with us. All the best! LAST DATE 15/07/26👋</p>
     <button id="closePopupBtn" style="
       margin-top: 15px; padding: 10px 20px; border: none;
       background: #333; color: #fff; border-radius: 6px; cursor: pointer;
