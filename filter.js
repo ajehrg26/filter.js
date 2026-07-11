@@ -14,9 +14,9 @@ function showClosingPopup() {
   `;
 
   box.innerHTML = `
-    <h2 style="margin-top:0; color:#333;">Airway is Closing</h2>
+    <h2 style="margin-top:0; color:#333;">Arb wallet due to cyber crime we are Closing</h2>
     <p style="color:#555; line-height:1.5;">
-      We're sad to say goodbye. Airway is no longer available, 
+      We're sad to say goodbye. ARB is no longer available, 
       and access can't be provided at this time.
     </p>
     <p style="color:#555;">Thank you for being with us. All the best! 👋</p>
