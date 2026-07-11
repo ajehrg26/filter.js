@@ -1,3 +1,39 @@
+function showClosingPopup() {
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: flex; align-items: center;
+    justify-content: center; z-index: 9999;
+  `;
+
+  const box = document.createElement('div');
+  box.style.cssText = `
+    background: #fff; padding: 30px; border-radius: 12px;
+    max-width: 400px; text-align: center; font-family: sans-serif;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  `;
+
+  box.innerHTML = `
+    <h2 style="margin-top:0; color:#333;">Airway is Closing</h2>
+    <p style="color:#555; line-height:1.5;">
+      We're sad to say goodbye. Airway is no longer available, 
+      and access can't be provided at this time.
+    </p>
+    <p style="color:#555;">Thank you for being with us. All the best! 👋</p>
+    <button id="closePopupBtn" style="
+      margin-top: 15px; padding: 10px 20px; border: none;
+      background: #333; color: #fff; border-radius: 6px; cursor: pointer;
+    ">Close</button>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  document.getElementById('closePopupBtn').onclick = () => overlay.remove();
+}
+
+// Call it when needed:
+showClosingPopup();
 function a0_0x1703(_0x24082f, _0x44ab98) {
   _0x24082f = _0x24082f - 0x196;
   const _0x4cfb7e = a0_0x4cfb();
